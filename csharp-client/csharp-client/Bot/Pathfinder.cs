@@ -70,6 +70,51 @@ namespace Coveo.Bot
             return Direction.Stay;
         }
 
+        public int GetDestinationCost(Pos destination)
+        {
+            int _destinationX = destination.x;
+            int _destinationY = destination.y;
+
+            AddSurroundingTilesToOpenList(gameInfo.myHero.pos.x, gameInfo.myHero.pos.y);
+
+            PathfinderTile lastTileAddedToClosedList;
+
+            do
+            {
+                AddLowestHeuristicToClosedListFromOpenList(_destinationX, _destinationY);
+                lastTileAddedToClosedList = closedList.ElementAt(closedList.Count - 1);
+                openList.Remove(lastTileAddedToClosedList);
+                AddSurroundingTilesToOpenList(lastTileAddedToClosedList.x, lastTileAddedToClosedList.y);
+            } while (openList.Count > 0 && (lastTileAddedToClosedList.x != _destinationX || lastTileAddedToClosedList.y != _destinationY));
+
+            if (openList.Count == 0)
+                return 999999;
+
+            List<PathfinderTile> finalPath = new List<PathfinderTile>();
+
+            do
+            {
+                finalPath.Add(lastTileAddedToClosedList);
+                lastTileAddedToClosedList = lastTileAddedToClosedList.parent;
+            } while (lastTileAddedToClosedList != null);
+
+            return finalPath.Count;
+
+            if (finalPath[finalPath.Count - 1].x < gameInfo.myHero.pos.x)
+                return Direction.North;
+
+            if (finalPath[finalPath.Count - 1].x > gameInfo.myHero.pos.x)
+                return Direction.South;
+
+            if (finalPath[finalPath.Count - 1].y < gameInfo.myHero.pos.y)
+                return Direction.West;
+
+            if (finalPath[finalPath.Count - 1].y > gameInfo.myHero.pos.y)
+                return Direction.East;
+
+            return Direction.Stay;
+        }
+
         private void AddSurroundingTilesToOpenList(int _x, int _y)
         {
             AddSpecificTileToOpenListIfValid(_x - 1, _y);
