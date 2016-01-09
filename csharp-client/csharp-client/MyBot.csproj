@@ -59,6 +59,8 @@
   <ItemGroup>
     <Compile Include="Bot\BotAI.cs" />
     <Compile Include="Bot\NotSoRandomBot.cs" />
+    <Compile Include="Bot\Pathfinder.cs" />
+    <Compile Include="Bot\PathfinderTile.cs" />
     <Compile Include="Core\DataContracts.cs" />
     <Compile Include="Core\Enums.cs" />
     <Compile Include="Program.cs" />
