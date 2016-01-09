@@ -38,12 +38,11 @@ namespace Coveo.Bot
             int bestScore = Int32.MaxValue;
 
             Pathfinder pathfinder = new Pathfinder(state);
-            int cost;
 
             foreach (var poi in POI)
             {
-                cost = WhatsMyScore(pathfinder.GetDestinationCost(poi.Key),poi.Value);
-                if (cost­­<bestScore)
+                int cost = WhatsMyScore(pathfinder.GetDestinationCost(poi.Key),poi.Value);
+               if(cost < bestScore)
                 {
                     bestPoiPos = poi.Key;
                     bestScore = cost;

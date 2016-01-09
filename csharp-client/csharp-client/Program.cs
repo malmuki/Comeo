@@ -29,7 +29,7 @@ namespace Coveo
 
             SimpleBotRunner runner = new SimpleBotRunner(
                 new ApiToolkit(serverURL, args[0], args[1] == "training", gameId, 25, "m1"),
-                new RandomBot());
+                new NotSoRandomBot());
 
             runner.Run();
 

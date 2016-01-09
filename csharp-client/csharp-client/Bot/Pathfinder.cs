@@ -99,20 +99,6 @@ namespace Coveo.Bot
             } while (lastTileAddedToClosedList != null);
 
             return finalPath.Count;
-
-            if (finalPath[finalPath.Count - 1].x < gameInfo.myHero.pos.x)
-                return Direction.North;
-
-            if (finalPath[finalPath.Count - 1].x > gameInfo.myHero.pos.x)
-                return Direction.South;
-
-            if (finalPath[finalPath.Count - 1].y < gameInfo.myHero.pos.y)
-                return Direction.West;
-
-            if (finalPath[finalPath.Count - 1].y > gameInfo.myHero.pos.y)
-                return Direction.East;
-
-            return Direction.Stay;
         }
 
         private void AddSurroundingTilesToOpenList(int _x, int _y)
