@@ -34,7 +34,7 @@ namespace Coveo.Bot
                         numberOfMinePlayer4++;
                 }
             }
-            Pos bestPoiPos;
+            Pos bestPoiPos = new Pos();
             int bestScore = Int32.MaxValue;
 
             Pathfinder pathfinder = new Pathfinder(state);
@@ -48,7 +48,7 @@ namespace Coveo.Bot
                 }
             }
 
-            return "";
+            return pathfinder.GetNextMoveToGetToDestination(bestPoiPos.x,bestPoiPos.y);
         }
 
         private int WhatsMyScore(int cost, Tile destType)
