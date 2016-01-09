@@ -53,14 +53,15 @@ namespace CoveoBlitz
                 // we send that to the server
                 while (api.gameState.finished == false && api.errored == false)
                 {
-                    try
-                    {
-                        api.MoveHero(simpleBot.Move(api.gameState));
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
+                    api.MoveHero(simpleBot.Move(api.gameState));
+                    //try
+                    //{
+                    //    api.MoveHero(simpleBot.Move(api.gameState));
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    Console.WriteLine(ex.Message);
+                    //}
                 }
             }
 
