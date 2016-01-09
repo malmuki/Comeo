@@ -15,7 +15,12 @@ namespace Coveo.Bot
         public string WhatShouldIDo(GameState state)
         {
             gState = state;
-            Dictionary<Pos,Tile> POI = new Dictionary<Pos, Tile>();
+            Dictionary<Pos, Tile> POI = new Dictionary<Pos, Tile>();
+            numberOfMinePlayer1 = 0;
+            numberOfMinePlayer2 = 0;
+            numberOfMinePlayer3 = 0;
+            numberOfMinePlayer4 = 0;
+
             for (int i = 0; i < state.board.Length; i++)
             {
                 for (int j = 0; j < state.board[i].Length; j++)
@@ -41,15 +46,15 @@ namespace Coveo.Bot
 
             foreach (var poi in POI)
             {
-                int cost = WhatsMyScore(pathfinder.GetDestinationCost(poi.Key),poi.Value);
-               if(cost < bestScore)
+                int cost = WhatsMyScore(pathfinder.GetDestinationCost(poi.Key), poi.Value);
+                if (cost < bestScore)
                 {
                     bestPoiPos = poi.Key;
                     bestScore = cost;
                 }
             }
 
-            return pathfinder.GetNextMoveToGetToDestination(bestPoiPos.x,bestPoiPos.y);
+            return pathfinder.GetNextMoveToGetToDestination(bestPoiPos.x, bestPoiPos.y);
         }
 
         private int WhatsMyScore(int cost, Tile destType)
@@ -60,57 +65,71 @@ namespace Coveo.Bot
             switch (destType)
             {
                 case Tile.TAVERN:
-                    if (state.myHero.life <= 25 && cost <= 25)
+                    if (state.myHero.gold != 0)
                     {
-                        score -= 30;
+                        if (state.myHero.life <= 26 && cost <= 25)
+                        {
+                            score -= 30;
+                        }
+                        else if (cost == 1 && state.myHero.life <= 90)
+                        {
+                            score -= 40;
+                        }
+                        else
+                        {
+                            score += 35;
+                        }
                     }
                     else
                     {
-                        score += 30;
+                        score += 56;
                     }
                     break;
+
                 case Tile.GOLD_MINE_NEUTRAL:
-                    if (state.myHero.life <= 25 && cost <= 25)
+                    if (state.myHero.life >= 25)
                     {
-                        score -= 13;
+                        score -= 22;
                     }
                     break;
 
                 case Tile.GOLD_MINE_1:
-                    if (heroId == 1)
+                    if (heroId != 1)
                     {
-                        score -= 15;
+                        score -= 25;
                     }
                     else
                     {
-                        score += 100000;
+                        score += 1000;
                     }
                     break;
 
                 case Tile.GOLD_MINE_2:
-                    if (heroId == 2)
+                    if (heroId != 2)
                     {
-                        score -= 15;
+                        score -= 25;
                     }
                     else
                     {
                         score += 1000;
                     }
                     break;
+
                 case Tile.GOLD_MINE_3:
-                    if (heroId == 3)
+                    if (heroId != 3)
                     {
-                        score -= 15;
+                        score -= 25;
                     }
                     else
                     {
                         score += 1000;
                     }
                     break;
+
                 case Tile.GOLD_MINE_4:
-                    if (heroId == 4)
+                    if (heroId != 4)
                     {
-                        score -= 15;
+                        score -= 25;
                     }
                     else
                     {
@@ -119,45 +138,49 @@ namespace Coveo.Bot
                     break;
 
                 case Tile.HERO_1:
-                    if (heroId != 1 )
+                    if (heroId != 1)
                     {
-                        score -= 7*numberOfMinePlayer1;
+                        score -= 4 * numberOfMinePlayer1;
                     }
                     else
                     {
                         score += 1000;
                     }
                     break;
+
                 case Tile.HERO_2:
                     if (heroId != 2)
                     {
-                        score -= 7*numberOfMinePlayer2;
+                        score -= 4 * numberOfMinePlayer2;
                     }
                     else
                     {
                         score += 1000;
                     }
                     break;
+
                 case Tile.HERO_3:
                     if (heroId != 3)
                     {
-                        score -= 7*numberOfMinePlayer3;
+                        score -= 4 * numberOfMinePlayer3;
                     }
                     else
                     {
                         score += 1000;
                     }
                     break;
+
                 case Tile.HERO_4:
                     if (heroId != 4)
                     {
-                        score -= 7*numberOfMinePlayer4;
+                        score -= 4 * numberOfMinePlayer4;
                     }
                     else
                     {
                         score += 1000;
                     }
                     break;
+                    
             }
             return score;
         }

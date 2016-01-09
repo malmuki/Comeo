@@ -44,7 +44,7 @@ namespace Coveo.Bot
                 AddLowestHeuristicToClosedListFromOpenList(_destinationX, _destinationY);
                 lastTileAddedToClosedList = closedList.ElementAt(closedList.Count - 1);
                 openList.Remove(lastTileAddedToClosedList);
-                AddSurroundingTilesToOpenList(lastTileAddedToClosedList.x, lastTileAddedToClosedList.y);
+                AddSurroundingTilesToOpenList(lastTileAddedToClosedList.x, lastTileAddedToClosedList.y, globalMap[_destinationX, _destinationY]);
             } while (openList.Count > 0 && (lastTileAddedToClosedList.x != _destinationX || lastTileAddedToClosedList.y != _destinationY));
 
             if (openList.Count == 0)
@@ -92,7 +92,7 @@ namespace Coveo.Bot
                 AddLowestHeuristicToClosedListFromOpenList(_destinationX, _destinationY);
                 lastTileAddedToClosedList = closedList.ElementAt(closedList.Count - 1);
                 openList.Remove(lastTileAddedToClosedList);
-                AddSurroundingTilesToOpenList(lastTileAddedToClosedList.x, lastTileAddedToClosedList.y);
+                AddSurroundingTilesToOpenList(lastTileAddedToClosedList.x, lastTileAddedToClosedList.y, globalMap[_destinationX, _destinationY]);
             } while (openList.Count > 0 && (lastTileAddedToClosedList.x != _destinationX || lastTileAddedToClosedList.y != _destinationY));
 
             if (openList.Count == 0)
@@ -111,28 +111,28 @@ namespace Coveo.Bot
             return finalPath.Count;
         }
 
-        private void AddSurroundingTilesToOpenList(int _x, int _y)
+        private void AddSurroundingTilesToOpenList(int _x, int _y, PathfinderTile tile)
         {
-            if (AddSpecificTileToOpenListIfValid(_x - 1, _y))
+            if (AddSpecificTileToOpenListIfValid(_x - 1, _y,tile))
                 openList[openList.Count - 1].parent = globalMap[_x, _y];
 
-            if (AddSpecificTileToOpenListIfValid(_x + 1, _y))
+            if (AddSpecificTileToOpenListIfValid(_x + 1, _y, tile))
                 openList[openList.Count - 1].parent = globalMap[_x, _y];
-            
-            if (AddSpecificTileToOpenListIfValid(_x, _y - 1))
+
+            if (AddSpecificTileToOpenListIfValid(_x, _y - 1, tile))
                 openList[openList.Count - 1].parent = globalMap[_x, _y];
-            
-            if(AddSpecificTileToOpenListIfValid(_x, _y + 1))
+
+            if (AddSpecificTileToOpenListIfValid(_x, _y + 1, tile))
                 openList[openList.Count - 1].parent = globalMap[_x, _y];
         }
 
-        private bool AddSpecificTileToOpenListIfValid(int _x, int _y)
+        private bool AddSpecificTileToOpenListIfValid(int _x, int _y, PathfinderTile tile)
         {
             if (_x >= 0 && _y >= 0)
             {
                 if (_x < gameInfo.board.GetLength(0) && _y < gameInfo.board.GetLength(0))
                 {
-                    if (globalMap[_x, _y].IsTraversable(gameInfo.myHero.life, gameInfo.myHero.id))
+                    if (globalMap[_x, _y].IsTraversable(gameInfo.myHero.life, gameInfo.myHero.id) || globalMap[_x, _y]== tile)
                     {
                         if (!closedList.Contains(globalMap[_x, _y]) && !openList.Contains(globalMap[_x, _y]))
                         {
