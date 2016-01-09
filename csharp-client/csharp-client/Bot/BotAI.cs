@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CoveoBlitz;
 
 namespace Coveo.Bot
@@ -18,9 +19,22 @@ namespace Coveo.Bot
                     }
                 }
             }
-
+            Pos bestPoiPos;
+            int bestScore = Int32.MaxValue;
+            foreach (var poi in POI)
+            {
+                //if (b)
+                //{
+                    
+                //}
+            }
 
             return "";
+        }
+
+        private int WhatsMyScore()
+        {
+            return 0;
         }
     }
 }
