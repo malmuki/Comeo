@@ -32,7 +32,10 @@ namespace Coveo.Bot
 
         public string GetNextMoveToGetToDestination(int _destinationX, int _destinationY)
         {
-            AddSurroundingTilesToOpenList(gameInfo.myHero.pos.x, gameInfo.myHero.pos.y);
+            openList.Clear();
+            closedList.Clear();
+
+            openList.Add(globalMap[gameInfo.myHero.pos.x, gameInfo.myHero.pos.y]);
 
             PathfinderTile lastTileAddedToClosedList;
 
@@ -55,6 +58,8 @@ namespace Coveo.Bot
                 lastTileAddedToClosedList = lastTileAddedToClosedList.parent;
             } while (lastTileAddedToClosedList != null);
 
+            finalPath.RemoveAt(finalPath.Count - 1);
+
             if (finalPath[finalPath.Count - 1].x < gameInfo.myHero.pos.x)
                 return Direction.North;
 
@@ -72,10 +77,13 @@ namespace Coveo.Bot
 
         public int GetDestinationCost(Pos destination)
         {
+            openList.Clear();
+            closedList.Clear();
+
             int _destinationX = destination.x;
             int _destinationY = destination.y;
 
-            AddSurroundingTilesToOpenList(gameInfo.myHero.pos.x, gameInfo.myHero.pos.y);
+            openList.Add(globalMap[gameInfo.myHero.pos.x, gameInfo.myHero.pos.y]);
 
             PathfinderTile lastTileAddedToClosedList;
 
@@ -88,7 +96,7 @@ namespace Coveo.Bot
             } while (openList.Count > 0 && (lastTileAddedToClosedList.x != _destinationX || lastTileAddedToClosedList.y != _destinationY));
 
             if (openList.Count == 0)
-                return 999999;
+                return 9999;
 
             List<PathfinderTile> finalPath = new List<PathfinderTile>();
 
@@ -98,18 +106,27 @@ namespace Coveo.Bot
                 lastTileAddedToClosedList = lastTileAddedToClosedList.parent;
             } while (lastTileAddedToClosedList != null);
 
+            finalPath.RemoveAt(finalPath.Count - 1);
+
             return finalPath.Count;
         }
 
         private void AddSurroundingTilesToOpenList(int _x, int _y)
         {
-            AddSpecificTileToOpenListIfValid(_x - 1, _y);
-            AddSpecificTileToOpenListIfValid(_x + 1, _y);
-            AddSpecificTileToOpenListIfValid(_x, _y - 1);
-            AddSpecificTileToOpenListIfValid(_x, _y + 1);
+            if (AddSpecificTileToOpenListIfValid(_x - 1, _y))
+                openList[openList.Count - 1].parent = globalMap[_x, _y];
+
+            if (AddSpecificTileToOpenListIfValid(_x + 1, _y))
+                openList[openList.Count - 1].parent = globalMap[_x, _y];
+            
+            if (AddSpecificTileToOpenListIfValid(_x, _y - 1))
+                openList[openList.Count - 1].parent = globalMap[_x, _y];
+            
+            if(AddSpecificTileToOpenListIfValid(_x, _y + 1))
+                openList[openList.Count - 1].parent = globalMap[_x, _y];
         }
 
-        private void AddSpecificTileToOpenListIfValid(int _x, int _y)
+        private bool AddSpecificTileToOpenListIfValid(int _x, int _y)
         {
             if (_x >= 0 && _y >= 0)
             {
@@ -120,10 +137,13 @@ namespace Coveo.Bot
                         if (!closedList.Contains(globalMap[_x, _y]) && !openList.Contains(globalMap[_x, _y]))
                         {
                             openList.Add(globalMap[_x, _y]);
+                            return true;
                         }
                     }
                 }
             }
+
+            return false;
         }
 
         private void AddLowestHeuristicToClosedListFromOpenList(int _destinationX, int _destinationY)
@@ -136,11 +156,6 @@ namespace Coveo.Bot
                 {
                     bestTile = currentTile;
                 }
-            }
-
-            if (closedList.Count > 0)
-            {
-                bestTile.parent = closedList.ElementAt(closedList.Count - 1);
             }
 
             closedList.Add(bestTile);
