@@ -8,21 +8,25 @@ namespace Coveo.Bot
     {
 
         public GameState gameInfo;
-        private PathfinderTile[][] globalMap;
+        private PathfinderTile[,] globalMap;
         private List<PathfinderTile> openList = new List<PathfinderTile>();
         private List<PathfinderTile> closedList = new List<PathfinderTile>();
 
         public Pathfinder(GameState _gameInfo)
         {
+            int sizeX = gameInfo.board.GetLength(0);
+            int sizeY = gameInfo.board.GetLength(1);
+
             gameInfo = _gameInfo;
-            globalMap = new PathfinderTile[gameInfo.board.GetLength(0)][gameInfo.board.GetLength(1)];
+
+            globalMap = new PathfinderTile[sizeX, sizeY];
 
             //Initialise pathfinding board
             for (int i = 0; i < gameInfo.board.GetLength(0); ++i)
             {
                 for (int j = 0; j < gameInfo.board.GetLength(1); ++j)
                 {
-                    globalMap[i][j] = new PathfinderTile(i, j, gameInfo.board[i][j]);
+                    globalMap[i, j] = new PathfinderTile(i, j, gameInfo.board[i][j]);
                 }
             }
         }
@@ -31,24 +35,41 @@ namespace Coveo.Bot
         {
             AddSurroundingTilesToOpenList(gameInfo.myHero.pos.x, gameInfo.myHero.pos.y);
 
-            PathfinderTile lastTileAdded;
+            PathfinderTile lastTileAddedToClosedList;
 
             do
             {
-                AddLowestHeuristicToClosedListFromOpenList();
+                AddLowestHeuristicToClosedListFromOpenList(_destinationX, _destinationY);
+                lastTileAddedToClosedList = closedList.ElementAt(closedList.Count - 1);
+                openList.Remove(lastTileAddedToClosedList);
 
-                lastTileAdded = closedList.ElementAt(closedList.Count - 1);
+            } while (openList.Count > 0 && (lastTileAddedToClosedList.x != _destinationX || lastTileAddedToClosedList.y != _destinationY));
 
+            if (openList.Count == 0)
+                return Direction.Stay;
 
-            } while (openList.Count > 0 && (lastTileAdded.x != _destinationX || lastTileAdded.y != _destinationY));
+            List<PathfinderTile> finalPath = new List<PathfinderTile>();
+
+            while (lastTileAddedToClosedList.parent != null)
+            {
+                finalPath.Add(lastTileAddedToClosedList);
+                lastTileAddedToClosedList = lastTileAddedToClosedList.parent;
+            }
+
+            if (finalPath[finalPath.Count - 1].x > gameInfo.myHero.pos.x)
+                return Direction.West;
+
+            if (finalPath[finalPath.Count - 1].x < gameInfo.myHero.pos.x)
+                return Direction.East;
+
+            if (finalPath[finalPath.Count - 1].y > gameInfo.myHero.pos.y)
+               return Direction.South;
+
+            if (finalPath[finalPath.Count - 1].y < gameInfo.myHero.pos.y)
+                return Direction.North;
 
             return Direction.Stay;
         }
-
-        //private List<PathfinderTile> GetCompletePath()
-        //{
-            
-        //}
 
         private void AddSurroundingTilesToOpenList(int _x, int _y)
         {
@@ -64,26 +85,35 @@ namespace Coveo.Bot
             {
                 if (_x < gameInfo.board.GetLength(0) && _y < gameInfo.board.GetLength(1))
                 {
-                    if (globalMap[_x][_y].IsTraversable(gameInfo.myHero.life, gameInfo.myHero.id))
+                    if (globalMap[_x, _y].IsTraversable(gameInfo.myHero.life, gameInfo.myHero.id))
                     {
-                        openList.Add(globalMap[_x][_y]);
+                        openList.Add(globalMap[_x, _y]);
                     }
                 }
             }
         }
 
-        private void AddLowestHeuristicToClosedListFromOpenList()
+        private void AddLowestHeuristicToClosedListFromOpenList(int _destinationX, int _destinationY)
         {
-            PathfinderTile bestTile = openList.Where(_x => _x == openList.Min()).ElementAt(0);
+            PathfinderTile bestTile = openList[0];
 
-            if ()
+            foreach (PathfinderTile currentTile in openList)
             {
-
+                if (currentTile.GetEstimationCostToDestination(_destinationX, _destinationY) < bestTile.GetEstimationCostToDestination(_destinationX, _destinationY))
+                {
+                    bestTile = currentTile;
+                }
             }
-            bestTile.parent = closedList.ElementAt(closedList.Count - 1);
 
-            closedList.Add();
+            if (closedList.Count > 0)
+            {
+                bestTile.parent = closedList.ElementAt(closedList.Count - 1);
+            }
+
+            closedList.Add(bestTile);
         }
+
+
 
     }
 }

@@ -17,21 +17,16 @@ namespace Coveo.Bot
             type = _type;
         }
 
-        public int GetCostToTraverse(int _heroHP, int _heroID)
+        private int GetCostToTraverse()
         {
-            if (!IsTraversable(_heroHP, _heroID))
-            {
-                throw new Exception();
-            }
-
-            if (type == Tile.FREE)
-                return 1;
+            if (type == Tile.TAVERN)
+                return 5;
 
             if (type == Tile.SPIKES)
                 return 10;
 
-            //Tavern
-            return 5;
+            //Free/Mines
+            return 1;
         }
 
         public bool IsTraversable(int _heroHP, int _heroID)
@@ -58,6 +53,30 @@ namespace Coveo.Bot
             return false;
 
             //type == Tile.IMPASSABLE_WOOD  || type == Tile.HERO_1 || type == Tile.HERO_2 || type == Tile.HERO_3 || type == Tile.HERO_4
+        }
+
+        public int GetEstimationCostToDestination(int _destinationX, int _destinationY)
+        {
+            int cost = 0;
+            int lastAdditionToCost;
+
+            cost += GetCostToTraverse();
+
+            lastAdditionToCost = x - _destinationX;
+            if (lastAdditionToCost < 0)
+            {
+                lastAdditionToCost *= -1;
+            }
+            cost += lastAdditionToCost;
+
+            lastAdditionToCost = y - _destinationY;
+            if (lastAdditionToCost < 0)
+            {
+                lastAdditionToCost *= -1;
+            }
+            cost += lastAdditionToCost;
+
+            return cost;
         }
 
     }
