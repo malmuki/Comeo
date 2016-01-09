@@ -67,7 +67,7 @@ namespace Coveo.Bot
                 case Tile.TAVERN:
                     if (state.myHero.gold != 0)
                     {
-                        if (state.myHero.life <= 26 && cost <= 25)
+                        if (state.myHero.life <= 35 && cost <= 25)
                         {
                             score -= 30;
                         }
@@ -87,14 +87,14 @@ namespace Coveo.Bot
                     break;
 
                 case Tile.GOLD_MINE_NEUTRAL:
-                    if (state.myHero.life >= 25)
+                    if (state.myHero.life > 26)
                     {
                         score -= 22;
                     }
                     break;
 
                 case Tile.GOLD_MINE_1:
-                    if (heroId != 1)
+                    if (heroId != 1 && state.myHero.life > 26)
                     {
                         score -= 25;
                     }
@@ -105,7 +105,7 @@ namespace Coveo.Bot
                     break;
 
                 case Tile.GOLD_MINE_2:
-                    if (heroId != 2)
+                    if (heroId != 2 && state.myHero.life > 26)
                     {
                         score -= 25;
                     }
@@ -116,7 +116,7 @@ namespace Coveo.Bot
                     break;
 
                 case Tile.GOLD_MINE_3:
-                    if (heroId != 3)
+                    if (heroId != 3 && state.myHero.life > 26)
                     {
                         score -= 25;
                     }
@@ -127,7 +127,7 @@ namespace Coveo.Bot
                     break;
 
                 case Tile.GOLD_MINE_4:
-                    if (heroId != 4)
+                    if (heroId != 4 && state.myHero.life > 26)
                     {
                         score -= 25;
                     }
@@ -141,17 +141,26 @@ namespace Coveo.Bot
                     if (heroId != 1)
                     {
                         score -= 4 * numberOfMinePlayer1;
+                        if (state.heroes[0].mineCount < 0 && state.heroes[0].life <= 25)
+                        {
+                            score -= 5;
+                        }
                     }
                     else
                     {
                         score += 1000;
                     }
+
                     break;
 
                 case Tile.HERO_2:
                     if (heroId != 2)
                     {
                         score -= 4 * numberOfMinePlayer2;
+                        if (state.heroes[1].mineCount < 0 && state.heroes[1].life <= 25)
+                        {
+                            score -= 5;
+                        }
                     }
                     else
                     {
@@ -163,6 +172,10 @@ namespace Coveo.Bot
                     if (heroId != 3)
                     {
                         score -= 4 * numberOfMinePlayer3;
+                        if (state.heroes[2].mineCount < 0 && state.heroes[2].life <= 25)
+                        {
+                            score -= 5;
+                        }
                     }
                     else
                     {
@@ -174,13 +187,16 @@ namespace Coveo.Bot
                     if (heroId != 4)
                     {
                         score -= 4 * numberOfMinePlayer4;
+                        if (state.heroes[3].mineCount < 0 && state.heroes[3].life <= 25)
+                        {
+                            score -= 5;
+                        }
                     }
                     else
                     {
                         score += 1000;
                     }
                     break;
-                    
             }
             return score;
         }
