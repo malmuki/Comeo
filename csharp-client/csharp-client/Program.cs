@@ -3,6 +3,7 @@
 using CoveoBlitz;
 using CoveoBlitz.RandomBot;
 using System;
+using CoveoBlitz.NotSoRandomBot;
 
 namespace Coveo
 {
@@ -28,7 +29,7 @@ namespace Coveo
 
             SimpleBotRunner runner = new SimpleBotRunner(
                 new ApiToolkit(serverURL, args[0], args[1] == "training", gameId),
-                new RandomBot());
+                new NotSoRandomBot());
 
             runner.Run();
 
