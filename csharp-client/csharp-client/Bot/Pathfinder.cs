@@ -14,17 +14,16 @@ namespace Coveo.Bot
 
         public Pathfinder(GameState _gameInfo)
         {
-            int sizeX = gameInfo.board.GetLength(0);
-            int sizeY = gameInfo.board.GetLength(1);
-
             gameInfo = _gameInfo;
+            int sizeX = gameInfo.board.GetLength(0);
+            int sizeY = gameInfo.board.GetLength(0);
 
             globalMap = new PathfinderTile[sizeX, sizeY];
 
             //Initialise pathfinding board
             for (int i = 0; i < gameInfo.board.GetLength(0); ++i)
             {
-                for (int j = 0; j < gameInfo.board.GetLength(1); ++j)
+                for (int j = 0; j < gameInfo.board.GetLength(0); ++j)
                 {
                     globalMap[i, j] = new PathfinderTile(i, j, gameInfo.board[i][j]);
                 }
@@ -42,7 +41,7 @@ namespace Coveo.Bot
                 AddLowestHeuristicToClosedListFromOpenList(_destinationX, _destinationY);
                 lastTileAddedToClosedList = closedList.ElementAt(closedList.Count - 1);
                 openList.Remove(lastTileAddedToClosedList);
-
+                AddSurroundingTilesToOpenList(lastTileAddedToClosedList.x, lastTileAddedToClosedList.y);
             } while (openList.Count > 0 && (lastTileAddedToClosedList.x != _destinationX || lastTileAddedToClosedList.y != _destinationY));
 
             if (openList.Count == 0)
@@ -50,23 +49,23 @@ namespace Coveo.Bot
 
             List<PathfinderTile> finalPath = new List<PathfinderTile>();
 
-            while (lastTileAddedToClosedList.parent != null)
+            do
             {
                 finalPath.Add(lastTileAddedToClosedList);
                 lastTileAddedToClosedList = lastTileAddedToClosedList.parent;
-            }
-
-            if (finalPath[finalPath.Count - 1].x > gameInfo.myHero.pos.x)
-                return Direction.West;
+            } while (lastTileAddedToClosedList != null);
 
             if (finalPath[finalPath.Count - 1].x < gameInfo.myHero.pos.x)
-                return Direction.East;
+                return Direction.North;
 
-            if (finalPath[finalPath.Count - 1].y > gameInfo.myHero.pos.y)
-               return Direction.South;
+            if (finalPath[finalPath.Count - 1].x > gameInfo.myHero.pos.x)
+                return Direction.South;
 
             if (finalPath[finalPath.Count - 1].y < gameInfo.myHero.pos.y)
-                return Direction.North;
+               return Direction.West;
+
+            if (finalPath[finalPath.Count - 1].y > gameInfo.myHero.pos.y)
+                return Direction.East;
 
             return Direction.Stay;
         }
@@ -83,11 +82,14 @@ namespace Coveo.Bot
         {
             if (_x >= 0 && _y >= 0)
             {
-                if (_x < gameInfo.board.GetLength(0) && _y < gameInfo.board.GetLength(1))
+                if (_x < gameInfo.board.GetLength(0) && _y < gameInfo.board.GetLength(0))
                 {
                     if (globalMap[_x, _y].IsTraversable(gameInfo.myHero.life, gameInfo.myHero.id))
                     {
-                        openList.Add(globalMap[_x, _y]);
+                        if (!closedList.Contains(globalMap[_x, _y]) && !openList.Contains(globalMap[_x, _y]))
+                        {
+                            openList.Add(globalMap[_x, _y]);
+                        }
                     }
                 }
             }
@@ -112,7 +114,6 @@ namespace Coveo.Bot
 
             closedList.Add(bestTile);
         }
-
 
 
     }

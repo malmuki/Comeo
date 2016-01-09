@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2005-2016, Coveo Solutions Inc.
 
 using System;
+using Coveo.Bot;
 
 namespace CoveoBlitz.RandomBot
 {
@@ -13,6 +14,7 @@ namespace CoveoBlitz.RandomBot
     {
         public DateTime delta= DateTime.Now ;
         private readonly Random random = new Random();
+        private Pathfinder myFinder;
 
         /// <summary>
         /// This will be run before the game starts
@@ -29,6 +31,8 @@ namespace CoveoBlitz.RandomBot
         /// <returns></returns>
         public string Move(GameState state)
         {
+            myFinder = new Pathfinder(state);
+
             string direction;
 
             switch (random.Next(0, 5)) {
@@ -53,6 +57,8 @@ namespace CoveoBlitz.RandomBot
                     break;
             }
 
+            direction = myFinder.GetNextMoveToGetToDestination(2, 2);
+
             Console.WriteLine("Completed turn {0}, going {1}", state.currentTurn, direction);
             Console.WriteLine(DateTime.Now - delta);
             return direction;
@@ -65,5 +71,6 @@ namespace CoveoBlitz.RandomBot
         {
             Console.WriteLine("Done");
         }
+
     }
 }

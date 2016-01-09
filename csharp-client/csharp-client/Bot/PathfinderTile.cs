@@ -20,10 +20,10 @@ namespace Coveo.Bot
         private int GetCostToTraverse()
         {
             if (type == Tile.TAVERN)
-                return 5;
+                return 3;
 
             if (type == Tile.SPIKES)
-                return 10;
+                return 6;
 
             //Free/Mines
             return 1;
