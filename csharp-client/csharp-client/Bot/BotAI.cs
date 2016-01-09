@@ -64,6 +64,10 @@ namespace Coveo.Bot
                     {
                         score -= 30;
                     }
+                    else
+                    {
+                        score += 30;
+                    }
                     break;
                 case Tile.GOLD_MINE_NEUTRAL:
                     if (state.myHero.life <= 25 && cost <= 25)
@@ -90,7 +94,7 @@ namespace Coveo.Bot
                     }
                     else
                     {
-                        score += 100000;
+                        score += 1000;
                     }
                     break;
                 case Tile.GOLD_MINE_3:
@@ -100,7 +104,7 @@ namespace Coveo.Bot
                     }
                     else
                     {
-                        score += 100000;
+                        score += 1000;
                     }
                     break;
                 case Tile.GOLD_MINE_4:
@@ -110,48 +114,48 @@ namespace Coveo.Bot
                     }
                     else
                     {
-                        score += 100000;
+                        score += 1000;
                     }
                     break;
 
                 case Tile.HERO_1:
-                    if (heroId != 1)
+                    if (heroId != 1 )
                     {
-                        score -= 5*numberOfMinePlayer1;
+                        score -= 7*numberOfMinePlayer1;
                     }
                     else
                     {
-                        score += 100000;
+                        score += 1000;
                     }
                     break;
                 case Tile.HERO_2:
                     if (heroId != 2)
                     {
-                        score -= 5*numberOfMinePlayer2;
+                        score -= 7*numberOfMinePlayer2;
                     }
                     else
                     {
-                        score += 100000;
+                        score += 1000;
                     }
                     break;
                 case Tile.HERO_3:
                     if (heroId != 3)
                     {
-                        score -= 5*numberOfMinePlayer3;
+                        score -= 7*numberOfMinePlayer3;
                     }
                     else
                     {
-                        score += 100000;
+                        score += 1000;
                     }
                     break;
                 case Tile.HERO_4:
                     if (heroId != 4)
                     {
-                        score -= 5*numberOfMinePlayer4;
+                        score -= 7*numberOfMinePlayer4;
                     }
                     else
                     {
-                        score += 100000;
+                        score += 1000;
                     }
                     break;
             }
